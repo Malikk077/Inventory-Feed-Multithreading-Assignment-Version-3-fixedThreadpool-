@@ -24,6 +24,7 @@ import com.litmus7.inventoryfeedmultithreading.dto.Response;
 import com.litmus7.inventoryfeedmultithreading.exception.ProductServiceException;
 import com.litmus7.inventoryfeedmultithreading.service.InventoryFeedService;
 import com.litmus7.inventoryfeedmultithreading.util.ErrorMessageUtil;
+import com.litmus7.inventoryfeedmultithreading.util.FileMoverUtil;
 
 
 public class InventoryFeedController {
@@ -56,6 +57,10 @@ public class InventoryFeedController {
 	                logger.debug("Found file: {}", fileName);
 
 	                if (!fileName.endsWith(".csv")) {
+	                	Path inputFile = Paths.get(file.toString());
+	                    Path baseDir = Paths.get("src/inventory-feed");
+	                    Path targetForErrors = baseDir.resolve("error").resolve(inputFile.getFileName());
+	                    FileMoverUtil.moveFile(inputFile, targetForErrors, "CSV read failure");
 	                    logger.warn("Skipping non-CSV file: {}", fileName);
 	                    return false;
 	                }
